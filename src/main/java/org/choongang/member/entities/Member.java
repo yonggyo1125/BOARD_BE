@@ -1,14 +1,12 @@
 package org.choongang.member.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.choongang.commons.entities.Base;
+import org.choongang.member.constants.Authority;
 
 @Data
 @Builder
@@ -26,6 +24,10 @@ public class Member extends Base {
 
     @Column(length=40, nullable = false)
     private String userNm;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length=10, nullable = false)
+    private Authority authority = Authority.USER;
 
     private boolean lock;
     private boolean enable;

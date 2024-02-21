@@ -23,7 +23,7 @@ public class Member extends Base {
     private String password;
 
     @Column(length=40, nullable = false)
-    private String userNm;
+    private String name;
 
     @Enumerated(EnumType.STRING)
     @Column(length=10, nullable = false)

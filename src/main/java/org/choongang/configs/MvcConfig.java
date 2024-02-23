@@ -1,5 +1,7 @@
 package org.choongang.configs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,5 +21,13 @@ public class MvcConfig implements WebMvcConfigurer {
         ms.setBasenames("messages.commons", "messages.validations", "messages.errors");
 
         return ms;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper om = new ObjectMapper();
+        om.registerModule(new JavaTimeModule());
+
+        return om;
     }
 }

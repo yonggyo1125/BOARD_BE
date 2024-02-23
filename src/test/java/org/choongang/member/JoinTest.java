@@ -1,5 +1,6 @@
 package org.choongang.member;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.choongang.member.controllers.RequestJoin;
 import org.choongang.member.entities.Member;
 import org.choongang.member.repositories.MemberRepository;
@@ -9,12 +10,23 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource(properties = "spring.profiles.active=test")
 public class JoinTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper om;
 
     @Autowired
     private MemberSaveService saveService;
@@ -34,5 +46,25 @@ public class JoinTest {
 
         Member member = repository.findByEmail(form.getEmail()).orElse(null);
         System.out.println(member);
+    }
+
+
+    @Test
+    @DisplayName("[통합테스트]회원가입 테스트")
+    void joinApiTest() throws Exception {
+
+        RequestJoin form = new RequestJoin();
+        form.setEmail("user01@test.org");
+        form.setPassword("_aA123456");
+        form.setConfirmPassword(form.getPassword());
+        form.setName("사용자01");
+
+        String params = om.writeValueAsString(form);
+
+        mockMvc.perform(post("/api/v1/member")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(params))
+                .andDo(print());
+
     }
 }

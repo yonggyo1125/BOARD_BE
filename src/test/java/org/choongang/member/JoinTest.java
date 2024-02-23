@@ -14,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -58,6 +60,7 @@ public class JoinTest {
         form.setPassword("_aA123456");
         form.setConfirmPassword(form.getPassword());
         form.setName("사용자01");
+        form.setAgree(true);
 
         String params = om.writeValueAsString(form);
 
@@ -66,5 +69,10 @@ public class JoinTest {
                 .content(params))
                 .andDo(print());
 
+        Member member = repository.findByEmail(form.getEmail()).orElse(null);
+        assertNotNull(member);
+
+        String email = form.getEmail();
+        assertEquals(email, member.getEmail());
     }
 }

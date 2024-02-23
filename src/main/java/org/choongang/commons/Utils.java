@@ -29,7 +29,14 @@ public class Utils {
 
     private List<String> _getErrorMessages(String[] codes) {
         List<String> messages = Arrays.stream(codes)
-                .map(c -> messageSource.getMessage(c, null, null))
+                .map(c -> {
+                    try {
+                        String message = messageSource.getMessage(c, null, null);
+                        return message;
+                    } catch (Exception e) {
+                        return "";
+                    }
+                })
                 .filter(s -> !s.isBlank()).toList();
 
         return messages;

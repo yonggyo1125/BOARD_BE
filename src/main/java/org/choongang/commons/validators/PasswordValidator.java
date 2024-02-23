@@ -26,7 +26,7 @@ public interface PasswordValidator {
     }
 
     default boolean specialCharsCheck(String password) {
-        Pattern pattern = Pattern.compile("[`~!@#$%^&*()-_+={}]+");
+        Pattern pattern = Pattern.compile("[`~!@#$%^&*()\\-_+={}]+");
 
         return pattern.matcher(password).find();
     }

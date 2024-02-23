@@ -3,6 +3,8 @@ package org.choongang.member.controllers;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.choongang.commons.exceptions.BadRequestException;
+import org.choongang.commons.rests.JSONData;
+import org.choongang.member.service.MemberLoginService;
 import org.choongang.member.service.MemberSaveService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
     private final MemberSaveService saveService;
     private final JoinValidator joinValidator;
+    private final MemberLoginService loginService;
 
     @PostMapping
     public ResponseEntity join(@Valid @RequestBody RequestJoin form, Errors errors) {
@@ -29,6 +32,16 @@ public class MemberController {
         saveService.join(form);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/token")
+    public JSONData login(@Valid RequestLogin form, Errors errors) {
+
+        errorProcess(errors);
+
+        String token = loginService.login(form);
+
+        return new JSONData(token);
     }
 
     private void errorProcess(Errors errors) {

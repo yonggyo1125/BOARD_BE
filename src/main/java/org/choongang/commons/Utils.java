@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,12 +22,16 @@ public class Utils {
 
         Map<String, List<String>> messages = errors.getFieldErrors()
                 .stream()
-                .collect(Collectors.toMap("", this::_getErrorMessages));
+                .collect(Collectors.toMap(FieldError::getField, e -> _getErrorMessages(e.getCodes())));
 
         return messages;
     }
 
-    private List<String[]> _getErrorMessages(String[] codes) {
-        return null;
+    private List<String> _getErrorMessages(String[] codes) {
+        List<String> messages = Arrays.stream(codes)
+                .map(c -> messageSource.getMessage(c, null, null))
+                .filter(s -> !s.isBlank()).toList();
+
+        return messages;
     }
 }

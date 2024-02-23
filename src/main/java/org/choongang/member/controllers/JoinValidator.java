@@ -1,6 +1,7 @@
 package org.choongang.member.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.choongang.commons.validators.PasswordValidator;
 import org.choongang.member.repositories.MemberRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -9,7 +10,7 @@ import org.springframework.validation.Validator;
 
 @Component
 @RequiredArgsConstructor
-public class JoinValidator implements Validator {
+public class JoinValidator implements Validator, PasswordValidator {
 
     private final MemberRepository repository;
 
@@ -37,6 +38,10 @@ public class JoinValidator implements Validator {
         }
 
         // 2. 비밀번호 복잡성 - 대소문자 각각 1자 이상 + 숫자 + 특수문자
+        if (StringUtils.hasText(password) && (!alphaCheck(password, false)
+            || !numberCheck(password) || !specialCharsCheck(password))) {
+            errors.rejectValue("password", "Complexity");
+        }
 
         // 3. 비밀번호, 비밀번호 확인 일치여부
         if (StringUtils.hasText(password) && StringUtils.hasText(confirmPassword)

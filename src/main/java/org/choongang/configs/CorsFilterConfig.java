@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class CorsFilterConfig {
 
     @Value("${cors.origin}")
-    private String origin;
+    private String origin = "http://localhost:3000";
 
     @Bean
     public CorsFilter corsFilter() {

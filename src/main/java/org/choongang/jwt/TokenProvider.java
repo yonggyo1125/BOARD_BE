@@ -8,7 +8,6 @@ import io.jsonwebtoken.security.Keys;
 import org.choongang.member.constants.Authority;
 import org.choongang.member.service.MemberInfo;
 import org.choongang.member.service.MemberInfoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,15 +26,16 @@ import java.util.stream.Collectors;
 @EnableConfigurationProperties(JwtProperties.class)
 public class TokenProvider {
 
-    @Autowired
     private MemberInfoService memberInfoService;
 
-    @Autowired
     private JwtProperties props;
 
     private Key key;
 
-    public TokenProvider() {
+    public TokenProvider(MemberInfoService memberInfoService, JwtProperties props) {
+        this.memberInfoService = memberInfoService;
+        this.props = props;
+
         byte[] keyBytes = Decoders.BASE64.decode(props.getSecret());
         key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -61,7 +61,7 @@ public class TokenProvider {
         Claims claims = Jwts.parser()
                 .setSigningKey(key)
                 .build()
-                .parseEncryptedClaims(token)
+                .parseClaimsJws(token)
                 .getPayload();
 
         String _authorities = (String)claims.get("auth");

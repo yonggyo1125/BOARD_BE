@@ -29,6 +29,7 @@ public class Member extends Base {
     @Column(length=10, nullable = false)
     private Authority authority = Authority.USER;
 
+    @Column(name="_lock")
     private boolean lock;
     private boolean enable;
 }

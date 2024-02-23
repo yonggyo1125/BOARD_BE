@@ -4,15 +4,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.choongang.commons.exceptions.BadRequestException;
 import org.choongang.commons.rests.JSONData;
+import org.choongang.member.service.MemberInfo;
 import org.choongang.member.service.MemberLoginService;
 import org.choongang.member.service.MemberSaveService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/member")
@@ -35,13 +35,27 @@ public class MemberController {
     }
 
     @PostMapping("/token")
-    public JSONData login(@Valid RequestLogin form, Errors errors) {
+    public JSONData login(@Valid @RequestBody RequestLogin form, Errors errors) {
 
         errorProcess(errors);
 
         String token = loginService.login(form);
 
         return new JSONData(token);
+    }
+
+    @GetMapping("/member_only")
+    //@PreAuthorize("authenticated()")
+    public MemberInfo memberOnlyTest(@AuthenticationPrincipal MemberInfo memberInfo) {
+        System.out.println("회원 전용 페이지 접근");
+
+        return memberInfo;
+    }
+
+    @GetMapping("/admin_only")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void adminOnlyTest() {
+        System.out.println("관리자 전용 페이지 접근");
     }
 
     private void errorProcess(Errors errors) {

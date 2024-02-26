@@ -19,26 +19,30 @@ public class Utils {
 
 
     public Map<String, List<String>> getErrorMessages(Errors errors) {
+        try {
+            Map<String, List<String>> messages = errors.getFieldErrors()
+                    .stream()
+                    .collect(Collectors.toMap(FieldError::getField, e -> _getErrorMessages(e.getCodes()), (m1, m2) -> m2));
 
-        Map<String, List<String>> messages = errors.getFieldErrors()
-                .stream()
-                .collect(Collectors.toMap(FieldError::getField, e -> _getErrorMessages(e.getCodes())));
 
+            List<String> gMessages = errors.getGlobalErrors()
+                    .stream()
+                    .map(o -> {
+                        try {
+                            String message = messageSource.getMessage(o.getCode(), null, null);
+                            return message;
+                        } catch (Exception e) {
+                            return "";
+                        }
+                    }).filter(s -> !s.isBlank()).toList();
 
-        List<String> gMessages = errors.getGlobalErrors()
-                .stream()
-                .map(o -> {
-                    try {
-                        String message = messageSource.getMessage(o.getCode(), null, null);
-                        return message;
-                    } catch (Exception e) {
-                        return "";
-                    }
-                }).filter(s -> !s.isBlank()).toList();
+            messages.put("global", gMessages);
+            return messages;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
 
-        messages.put("global", gMessages);
-
-        return messages;
     }
 
     private List<String> _getErrorMessages(String[] codes) {

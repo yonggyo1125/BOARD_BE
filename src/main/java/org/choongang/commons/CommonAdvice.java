@@ -33,6 +33,7 @@ public class CommonAdvice {
                 Map<String, List<String>> messages = utils.getErrorMessages(errors);
                 if (messages != null && !messages.isEmpty()) message = messages;
             }
+
         } else if (e instanceof AccessDeniedException) {
             status = HttpStatus.UNAUTHORIZED;
         }

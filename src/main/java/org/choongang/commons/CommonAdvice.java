@@ -5,6 +5,7 @@ import org.choongang.commons.exceptions.CommonException;
 import org.choongang.commons.rests.JSONData;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,6 +33,8 @@ public class CommonAdvice {
                 Map<String, List<String>> messages = utils.getErrorMessages(errors);
                 if (messages != null && !messages.isEmpty()) message = messages;
             }
+        } else if (e instanceof AccessDeniedException) {
+            status = HttpStatus.UNAUTHORIZED;
         }
 
         e.printStackTrace();

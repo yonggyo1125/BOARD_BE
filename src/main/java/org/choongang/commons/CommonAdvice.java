@@ -3,9 +3,11 @@ package org.choongang.commons;
 import lombok.RequiredArgsConstructor;
 import org.choongang.commons.exceptions.CommonException;
 import org.choongang.commons.rests.JSONData;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,6 +20,7 @@ import java.util.Map;
 public class CommonAdvice {
 
     private final Utils utils;
+    private final MessageSource messageSource;
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<JSONData> errorHandler(Exception e) {
@@ -36,6 +39,9 @@ public class CommonAdvice {
 
         } else if (e instanceof AccessDeniedException) {
             status = HttpStatus.UNAUTHORIZED;
+        } else if (e instanceof BadCredentialsException) { // 아아디와 비번 불일치
+            status = HttpStatus.BAD_REQUEST;
+            message = messageSource.getMessage("Fail.login.credential", null, null);
         }
 
         e.printStackTrace();

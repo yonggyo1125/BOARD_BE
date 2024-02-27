@@ -13,7 +13,6 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class FileInfoSaveService {
-
     public List<FileInfo> save(RequestFileUpload form) {
         List<FileInfo> items = new ArrayList<>();
         MultipartFile[] files = form.getFile();
@@ -32,7 +31,12 @@ public class FileInfoSaveService {
                     .contentType(file.getContentType())
                     .build();
                     //.extension(extension)
+
+
         }
+
+
+
 
         return null;
     }

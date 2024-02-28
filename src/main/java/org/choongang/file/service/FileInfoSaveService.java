@@ -1,6 +1,7 @@
 package org.choongang.file.service;
 
 import lombok.RequiredArgsConstructor;
+import org.choongang.commons.exceptions.BadRequestException;
 import org.choongang.file.controllers.RequestFileUpload;
 import org.choongang.file.entities.FileInfo;
 import org.choongang.file.repositories.FileInfoRepository;
@@ -20,6 +21,11 @@ public class FileInfoSaveService {
     public List<FileInfo> save(RequestFileUpload form) {
         List<FileInfo> items = new ArrayList<>();
         MultipartFile[] files = form.getFile();
+
+        if (files == null || files.length == 0) {
+            throw new BadRequestException("Required.file.upload", true);
+        }
+
         String gid = form.getGid();
         String location = form.getLocation();
         boolean imageOnly = Objects.requireNonNullElse(form.getImageOnly(), false);

@@ -34,3 +34,8 @@ jwt:
 
 cors:
   origin: ${cors.origin}
+
+file:
+  upload:
+    path: ${file.upload.path}
+    url: /uploads/

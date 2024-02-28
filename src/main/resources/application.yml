@@ -37,3 +37,8 @@ jwt:
 
 cors:
   origin: ${cors.origin}
+
+file:
+  upload:
+    path: C:/uploads/
+    url: /uploads/

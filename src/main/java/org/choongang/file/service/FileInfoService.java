@@ -1,14 +1,21 @@
 package org.choongang.file.service;
 
+import com.querydsl.core.BooleanBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.choongang.configs.FileProperties;
 import org.choongang.file.entities.FileInfo;
+import org.choongang.file.entities.QFileInfo;
+import org.choongang.file.repositories.FileInfoRepository;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
+import java.util.List;
+
+import static org.springframework.data.domain.Sort.Order.desc;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +24,44 @@ public class FileInfoService {
 
     private final FileProperties props;
     private final HttpServletRequest request;
+    private final FileInfoRepository repository;
+
+    public FileInfo get(Long seq) {
+        FileInfo item = repository.findById(seq).orElseThrow(FileNotFoundException::new);
+
+        addFileInfo(item);
+
+        return item;
+    }
+
+    /**
+     *
+     * @param gid
+     * @param location
+     * @param mode : ALL - 완료 + 미완료, DONE - 완료, UNDONE - 미완료
+     * @return
+     */
+    public List<FileInfo> getList(String gid, String location, String mode) {
+        mode = StringUtils.hasText(mode) ? mode.toUpperCase() : "ALL";
+
+        QFileInfo fileInfo = QFileInfo.fileInfo;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(fileInfo.gid.eq(gid));
+
+        if (StringUtils.hasText(location)) {
+            builder.and(fileInfo.location.eq(location));
+        }
+
+        if (!mode.equals("ALL")) {
+            builder.and(fileInfo.done.eq(mode.equals("DONE")));
+        }
+
+        List<FileInfo> items = (List<FileInfo>)repository.findAll(builder, Sort.by(desc("createdAt")));
+
+        items.forEach(this::addFileInfo);
+
+        return items;
+    }
 
     public void addFileInfo(FileInfo item) {
         long seq = item.getSeq();
@@ -27,6 +72,15 @@ public class FileInfoService {
 
         item.setFilePath(filePath);
         item.setFileUrl(fileUrl);
+
+        String contentType = item.getContentType();
+        if (contentType.indexOf("image/") != -1) { // 업로드한 파일이 이미지
+            String thumbPath = thumbPath(seq) + "/main_" + fileName;
+            String thumbUrl = thumbUrl(seq) + "/main_" + fileName;
+
+            item.setThumbPath(thumbPath);
+            item.setThumbUrl(thumbUrl);
+        }
     }
 
     public String uploadDir(long seq) {

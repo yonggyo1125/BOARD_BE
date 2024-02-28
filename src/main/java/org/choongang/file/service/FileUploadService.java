@@ -1,6 +1,7 @@
 package org.choongang.file.service;
 
 import lombok.RequiredArgsConstructor;
+import net.coobird.thumbnailator.Thumbnails;
 import org.choongang.configs.FileProperties;
 import org.choongang.file.controllers.RequestFileUpload;
 import org.choongang.file.entities.FileInfo;
@@ -34,7 +35,18 @@ public class FileUploadService {
 
             try {
                 file.transferTo(uploadFile);
-                // 파일 부가정보 - 파일 path, 파일 url
+
+                String contentType = file.getContentType();
+                if (contentType.indexOf("image/") != -1) { // 이미지 파일인 경우
+                    String thumbPath = item.getThumbPath();
+                    File _thumbPath = new File(thumbPath);
+                    if (!_thumbPath.exists()) { // 생성된 썸네일이 없는 경우만 생성
+                        Thumbnails.of(uploadFile)
+                                .size(300, 300)
+                                .toFile(_thumbPath);
+                    }
+                }
+
 
             } catch (IOException e) {
                 // 업로드 실패 -> 파일 정보 제거
@@ -46,5 +58,9 @@ public class FileUploadService {
         repository.flush();
 
         return items;
+    }
+
+    public void processDone(String gid) {
+
     }
 }

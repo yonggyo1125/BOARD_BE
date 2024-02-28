@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +40,14 @@ public class FileDeleteService {
 
         repository.delete(item);
         repository.flush();
+    }
+
+    public void delete(String gid, String location) {
+        List<FileInfo> items = infoService.getList(gid, location);
+        items.forEach(item -> delete(item.getSeq()));
+    }
+
+    public void delete(String gid) {
+        delete(gid, null);
     }
 }

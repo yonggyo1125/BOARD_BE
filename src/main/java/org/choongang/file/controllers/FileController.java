@@ -9,7 +9,6 @@ import org.choongang.file.service.FileInfoService;
 import org.choongang.file.service.FileUploadService;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -24,8 +23,8 @@ public class FileController {
 
     // 파일 업로드
     @PostMapping
-    public JSONData upload(@RequestParam("file") MultipartFile[] file, RequestFileUpload form) {
-        form.setFile(file);
+    public JSONData upload(RequestFileUpload form) {
+        //form.setFile(file);
         List<FileInfo> items = uploadService.upload(form);
 
         return new JSONData(items);

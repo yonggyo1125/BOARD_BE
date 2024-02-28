@@ -63,6 +63,22 @@ public class FileInfoService {
         return items;
     }
 
+    public List<FileInfo> getList(String gid) {
+        return getList(gid, null, "ALL");
+    }
+
+    public List<FileInfo> getList(String gid, String location) {
+        return getList(gid, location, "ALL");
+    }
+
+    public List<FileInfo> getListDone(String gid, String location) {
+        return getList(gid, location, "DONE");
+    }
+
+    public List<FileInfo> getListDone(String gid) {
+        return getListDone(gid, null);
+    }
+
     public void addFileInfo(FileInfo item) {
         long seq = item.getSeq();
         String extension = item.getExtension();

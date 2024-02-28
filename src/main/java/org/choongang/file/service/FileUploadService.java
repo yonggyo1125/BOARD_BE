@@ -61,6 +61,9 @@ public class FileUploadService {
     }
 
     public void processDone(String gid) {
+        List<FileInfo> items = infoService.getList(gid);
+        items.forEach(item -> item.setDone(true));
 
+        repository.flush();
     }
 }

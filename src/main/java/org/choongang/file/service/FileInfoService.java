@@ -46,4 +46,20 @@ public class FileInfoService {
 
         return host + props.getUrl() + (seq % 10L);
     }
+
+    public String thumbPath(long seq) {
+        String dir = uploadDir(seq);
+
+        String thumbDir= dir + "/thumbs";
+        File _thumbDir = new File(thumbDir);
+        if (!_thumbDir.exists()) {
+            _thumbDir.mkdir();
+        }
+
+        return thumbDir;
+    }
+
+    public String thumbUrl(long seq) {
+        return uploadUrl(seq) + "/thumbs";
+    }
 }

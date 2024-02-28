@@ -7,7 +7,6 @@ import org.choongang.file.entities.FileInfo;
 import org.choongang.file.repositories.FileInfoRepository;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -19,6 +18,7 @@ import java.util.List;
 @EnableConfigurationProperties(FileProperties.class)
 public class FileUploadService {
     private final FileInfoSaveService saveService;
+    private final FileInfoService infoService;
     private final FileProperties props;
     private final FileInfoRepository repository;
 
@@ -29,15 +29,9 @@ public class FileUploadService {
         for (FileInfo item : items) {
             MultipartFile file = item.getFile();
 
-            long seq = item.getSeq();
-            String uploadDir = props.getPath() + (seq % 10L);
-            File dir = new File(uploadDir);
-            if (!dir.exists()) {
-                dir.mkdir();
-            }
-            String extension = item.getExtension();
-            File uploadFile = new File(uploadDir + "/" + seq +
-                    (StringUtils.hasText(extension) ? "." + extension : ""));
+            infoService.addFileInfo(item);
+            File uploadFile = new File(item.getFilePath());
+
             try {
                 file.transferTo(uploadFile);
                 // 파일 부가정보 - 파일 path, 파일 url

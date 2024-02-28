@@ -9,6 +9,11 @@ public class BadRequestException extends CommonException{
         super(message, HttpStatus.BAD_REQUEST);
     }
 
+    public BadRequestException(String code, boolean messageCode) {
+        this(code);
+        setMessageCode(messageCode);
+    }
+
     public BadRequestException(Errors errors) {
         super(errors, HttpStatus.BAD_REQUEST);
     }

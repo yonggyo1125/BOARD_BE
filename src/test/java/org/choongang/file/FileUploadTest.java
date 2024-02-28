@@ -25,7 +25,7 @@ public class FileUploadTest {
 
     @BeforeEach
     void init() {
-        file = new MockMultipartFile("file", "test.png", "image/png", new byte[] {0, 1, 2, 3, 4});
+        file = new MockMultipartFile("file", "test.png", "image/png", "abc".getBytes());
     }
 
     @Test

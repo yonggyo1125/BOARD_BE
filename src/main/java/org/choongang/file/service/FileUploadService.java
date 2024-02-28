@@ -50,12 +50,12 @@ public class FileUploadService {
 
             } catch (IOException e) {
                 // 업로드 실패 -> 파일 정보 제거
-                repository.delete(item);
-                items.remove(item);
+                //repository.delete(item);
+                //items.remove(item);
             }
         }
 
-        repository.flush();
+        //repository.flush();
 
         return items;
     }

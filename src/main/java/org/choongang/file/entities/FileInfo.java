@@ -1,5 +1,6 @@
 package org.choongang.file.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,8 +16,8 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor @AllArgsConstructor
 @Table(indexes = {
-        @Index(name="idx_fi_gid", columnList = "gid, createdAt"),
-        @Index(name="idx_fi_gid_location", columnList = "gid, location, createdAt")
+        @Index(name="idx_fi_gid", columnList = "gid"),
+        @Index(name="idx_fi_gid_location", columnList = "gid, location")
 })
 public class FileInfo extends BaseMember {
     @Id @GeneratedValue
@@ -52,6 +53,7 @@ public class FileInfo extends BaseMember {
     private String thumbUrl;
 
     @Transient
+    @JsonIgnore
     private MultipartFile file;
 
 

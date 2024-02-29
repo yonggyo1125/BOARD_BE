@@ -24,6 +24,7 @@ public class FileController {
     // 파일 업로드
     @PostMapping
     public JSONData upload(RequestFileUpload form) {
+
         List<FileInfo> items = uploadService.upload(form);
 
         return new JSONData(items);

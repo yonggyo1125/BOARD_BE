@@ -3,6 +3,7 @@ package org.choongang.configs;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.choongang.jwt.JwtProcessFilter;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -17,10 +18,12 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 @RequiredArgsConstructor
 @EnableMethodSecurity // @PreAuthorize('hasAuthority(...)')
+@EnableConfigurationProperties(FileProperties.class)
 public class SecurityConfig {
 
     private final CorsFilter corsFilter;
     private final JwtProcessFilter jwtProcessFilter;
+    private final FileProperties fileProperties;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,7 +38,8 @@ public class SecurityConfig {
                 c.requestMatchers(
                         "/api/v1/member",
                         "/api/v1/member/token",
-                                "/api/v1/file/**").permitAll()
+                                "/api/v1/file/**",
+                                fileProperties.getUrl() + "**").permitAll()
                         .anyRequest().authenticated());
 
 

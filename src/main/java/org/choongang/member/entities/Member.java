@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import org.choongang.commons.entities.Base;
 import org.choongang.member.constants.Authority;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @Entity
@@ -16,6 +18,9 @@ import org.choongang.member.constants.Authority;
 public class Member extends Base {
     @Id @GeneratedValue
     private Long seq;
+
+    @Column(length=65, nullable = false)
+    private String gid = UUID.randomUUID().toString();
 
     @Column(length=80, unique = true, nullable = false)
     private String email;

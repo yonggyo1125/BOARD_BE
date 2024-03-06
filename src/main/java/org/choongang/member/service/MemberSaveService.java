@@ -20,10 +20,11 @@ public class MemberSaveService {
         String hash = encoder.encode(form.getPassword());
 
         Member member = Member.builder()
+                .gid(form.getGid())
                 .email(form.getEmail())
                 .name(form.getName())
                 .password(hash)
-                .authority(Authority.USER)
+                .authority(Authority.ADMIN)
                 .lock(false)
                 .enable(true)
                 .build();

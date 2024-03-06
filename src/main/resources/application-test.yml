@@ -29,3 +29,12 @@ file:
   upload:
     path: C:/uploads/
     url: /uploads/
+
+
+jwt:
+  header: Authorization
+  secret: ${jwt.secret}
+  accessTokenValidityInSeconds: 3600 # 60 min
+
+cors:
+  origin: ${cors.origin}

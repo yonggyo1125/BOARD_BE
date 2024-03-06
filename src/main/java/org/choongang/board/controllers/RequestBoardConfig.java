@@ -7,6 +7,8 @@ import org.choongang.member.constants.Authority;
 @Data
 public class RequestBoardConfig {
 
+    private String mode = "add";
+
     @NotBlank
     private String bid;
 
